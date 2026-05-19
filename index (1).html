@@ -232,9 +232,10 @@ let cache = { jogos:[], fases:[], usuarios:[], palpites:[], palpitesFase:[], sel
 // ── API ───────────────────────────────────────────────────────
 async function api(action, body={}) {
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({ action, ...body }),
+    const params = new URLSearchParams({ action, ...body });
+    const res = await fetch(API_URL + "?" + params.toString(), {
+      method: "GET",
+      redirect: "follow",
     });
     return await res.json();
   } catch(e) {
