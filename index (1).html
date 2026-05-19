@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Daki pro Gol ⚽</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue:#1A3A5C;--accent:#2E75B6;--green:#1D9E75;--amber:#BA7517;--red:#A32D2D;
+  --light:#E8F0F7;--bg:#F4F7FA;--surface:#FFFFFF;--border:#E0E8F0;
+  --text:#1A2533;--muted:#6B7A8D;--hint:#9BA8B5;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+h1,h2,h3,.logo{font-family:'Syne',sans-serif;}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--blue);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+.logo span{color:#5DB8F4;}
+.topbar-user{font-size:13px;color:rgba(255,255,255,0.65);}
+.topbar-user strong{color:#fff;}
+.btn-sair{background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-left:10px;}
+.btn-sair:hover{background:rgba(255,255,255,0.1);}
+
+/* ── NAV ── */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 16px;overflow-x:auto;gap:0;}
+.nav-btn{font-size:13px;font-family:'DM Sans',sans-serif;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:11px 14px;cursor:pointer;white-space:nowrap;font-weight:400;transition:color .15s;}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500;}
+.badge-nav{background:var(--accent);color:#fff;font-size:10px;border-radius:8px;padding:1px 5px;margin-left:4px;vertical-align:middle;}
+
+/* ── SCREENS ── */
+.screen{display:none;padding:20px;max-width:680px;margin:0 auto;}
+.screen.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px;}
+.card-title{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;font-family:'Syne',sans-serif;}
+
+/* ── STAT GRID ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.stat-label{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.stat-value{font-size:24px;font-weight:700;color:var(--blue);font-family:'Syne',sans-serif;}
+.stat-sub{font-size:11px;color:var(--hint);margin-top:2px;}
+
+/* ── RANKING ── */
+.rank-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.rank-row:last-child{border-bottom:none;}
+.rank-pos{font-size:14px;font-weight:700;width:24px;text-align:center;flex-shrink:0;font-family:'Syne',sans-serif;}
+.rank-pos.gold{color:#BA7517;}
+.rank-pos.silver{color:#5F5E5A;}
+.rank-pos.bronze{color:#993C1D;}
+.avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;font-family:'Syne',sans-serif;}
+.rank-info{flex:1;}
+.rank-name{font-size:14px;font-weight:500;}
+.rank-detail{font-size:12px;color:var(--muted);}
+.rank-pts{font-size:16px;font-weight:700;color:var(--accent);font-family:'Syne',sans-serif;}
+.rank-pts span{font-size:11px;color:var(--hint);font-weight:400;font-family:'DM Sans',sans-serif;}
+.me-highlight{background:#EBF4FF;border-radius:10px;padding:8px 10px;margin:-2px;}
+
+/* ── JOGOS ── */
+.jogo-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+.jogo-header{background:var(--bg);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.jogo-fase{font-size:11px;color:var(--muted);}
+.tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500;}
+.tag-green{background:#EAF3DE;color:#2A5A0A;}
+.tag-amber{background:#FAEEDA;color:#6B3A00;}
+.tag-gray{background:#F0F0F0;color:#5F5E5A;}
+.tag-red{background:#FCEBEB;color:#7A1F1F;}
+.tag-blue{background:#E6F1FB;color:#0D4A8A;}
+.jogo-body{padding:16px;}
+.jogo-times{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.jogo-time{text-align:center;}
+.jogo-flag{font-size:32px;}
+.jogo-name{font-size:13px;font-weight:500;margin-top:4px;}
+.jogo-vs{font-size:20px;font-weight:700;color:var(--hint);font-family:'Syne',sans-serif;}
+.palpite-row{display:flex;align-items:center;justify-content:center;gap:10px;}
+.num-input{width:56px;text-align:center;font-size:22px;font-weight:700;padding:8px 4px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;}
+.num-input:focus{outline:none;border-color:var(--accent);}
+.sep{font-size:22px;font-weight:700;color:var(--hint);}
+.palpite-salvo{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:8px;padding:10px 14px;}
+.pts-exato{color:var(--green);font-weight:700;}
+.pts-res{color:var(--amber);font-weight:500;}
+.pts-zero{color:var(--hint);}
+
+/* ── FASES ── */
+.fase-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;}
+.fase-opcoes{display:flex;gap:10px;margin-top:12px;}
+.fase-btn{flex:1;padding:10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;background:var(--surface);color:var(--text);font-family:'DM Sans',sans-serif;transition:all .15s;}
+.fase-btn:hover{background:var(--bg);}
+.fase-btn.sel-sim{background:#EAF3DE;border-color:#2A5A0A;color:#2A5A0A;}
+.fase-btn.sel-nao{background:#FCEBEB;border-color:#7A1F1F;color:#7A1F1F;}
+
+/* ── SELADO ── */
+.selado-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;}
+.selado-ok{display:flex;align-items:center;gap:12px;background:#EAF3DE;border-radius:8px;padding:12px 14px;}
+.selado-ok-icon{font-size:22px;}
+.selado-ok-text{font-size:13px;font-weight:600;color:#2A5A0A;}
+.selado-ok-sub{font-size:12px;color:#3B6D11;margin-top:2px;}
+
+/* ── BUTTONS ── */
+.btn{border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;}
+.btn:hover{background:var(--bg);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--blue);border-color:var(--blue);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-success{background:#EAF3DE;color:#2A5A0A;border-color:#2A5A0A;}
+.btn-danger{background:#FCEBEB;color:#7A1F1F;border-color:#7A1F1F;}
+.btn-block{width:100%;}
+
+/* ── LOGIN ── */
+.login-wrap{max-width:380px;margin:48px auto;padding:0 20px;}
+.login-logo{font-size:32px;font-weight:700;color:var(--blue);text-align:center;margin-bottom:4px;}
+.login-logo span{color:var(--accent);}
+.login-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px;}
+.form-label{font-size:13px;color:var(--muted);display:block;margin-bottom:4px;}
+.form-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);margin-bottom:12px;}
+.form-input:focus{outline:none;border-color:var(--accent);}
+.form-err{font-size:12px;color:var(--red);margin-bottom:8px;}
+.form-disc{font-size:11px;color:var(--hint);text-align:center;margin-top:10px;line-height:1.6;}
+.info-box{background:#E6F1FB;border-radius:8px;padding:10px 14px;font-size:13px;color:#0D4A8A;margin-bottom:14px;line-height:1.5;}
+.divider{height:1px;background:var(--border);margin:18px 0;}
+
+/* ── ADMIN ── */
+.admin-section{margin-bottom:24px;}
+.admin-section-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px;font-family:'Syne',sans-serif;}
+.pendente-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;}
+.pendente-info{flex:1;}
+.pendente-nome{font-size:13px;font-weight:500;}
+.pendente-email{font-size:12px;color:var(--muted);}
+.jogo-admin-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+.jogo-admin-head{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);}
+.jogo-admin-body{padding:12px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.res-input{width:46px;text-align:center;font-size:16px;font-weight:700;padding:6px 4px;border:1.5px solid var(--border);border-radius:6px;font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px 20px;color:var(--muted);}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:32px;color:var(--hint);}
+.empty-icon{font-size:36px;margin-bottom:8px;}
+
+/* ── WAITING ── */
+.wait-wrap{max-width:360px;margin:60px auto;text-align:center;padding:0 20px;}
+
+/* ── FORM JOGO ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-group{margin-bottom:12px;}
+.form-select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--text);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar" id="topbar" style="display:none;">
+  <div class="logo">Daki <span>pro Gol</span> ⚽</div>
+  <div style="display:flex;align-items:center;gap:0;">
+    <div class="topbar-user" id="topbar-user"></div>
+    <button class="btn-sair" onclick="sair()">sair</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav" id="nav" style="display:none;"></div>
+
+<!-- VIEWS -->
+<div id="view-login">
+  <div class="login-wrap">
+    <div class="login-logo">Daki <span>pro Gol</span></div>
+    <div class="login-sub">O bolão oficial da torcida Daki 🇧🇷</div>
+    <div class="info-box">🔒 Acesso exclusivo para colaboradores com e-mail @soudaki.com</div>
+    <label class="form-label">seu nome completo</label>
+    <input class="form-input" id="inp-nome" type="text" placeholder="Ex: Ana Souza" />
+    <label class="form-label">e-mail corporativo</label>
+    <input class="form-input" id="inp-email" type="email" placeholder="seunome@soudaki.com" />
+    <div class="form-err" id="err-login" style="display:none;"></div>
+    <button class="btn btn-primary btn-block" id="btn-entrar" onclick="tentarLogin()">entrar no bolão</button>
+    <div class="form-disc">Participação gratuita e voluntária · Sem associação a apostas</div>
+    <div class="divider"></div>
+    <div style="text-align:center;">
+      <button class="btn btn-sm" onclick="irAdmin()">🔐 área admin</button>
+    </div>
+  </div>
+</div>
+
+<div id="view-admin-login" style="display:none;">
+  <div class="login-wrap">
+    <div class="login-logo" style="font-size:22px;">Área de administração</div>
+    <div class="login-sub">DHO / People</div>
+    <label class="form-label">senha</label>
+    <input class="form-input" id="inp-admin-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginAdmin()" />
+    <div class="form-err" id="err-admin" style="display:none;"></div>
+    <button class="btn btn-primary btn-block" onclick="loginAdmin()">acessar</button>
+    <div style="margin-top:12px;text-align:center;"><button class="btn btn-sm" onclick="voltarLogin()">← voltar</button></div>
+  </div>
+</div>
+
+<div id="view-aguardando" style="display:none;">
+  <div class="wait-wrap">
+    <div style="font-size:48px;margin-bottom:14px;">⏳</div>
+    <h2 style="font-size:20px;margin-bottom:8px;">Cadastro enviado!</h2>
+    <p style="color:var(--muted);line-height:1.6;font-size:14px;">Seu cadastro está aguardando aprovação. Assim que for liberado, acesse novamente com o mesmo e-mail.</p>
+    <div style="margin-top:20px;"><button class="btn btn-sm" onclick="voltarLogin()">← voltar ao login</button></div>
+  </div>
+</div>
+
+<div id="view-main" style="display:none;">
+  <div id="screen-ranking" class="screen"></div>
+  <div id="screen-palpites" class="screen"></div>
+  <div id="screen-fases" class="screen"></div>
+  <div id="screen-selado" class="screen"></div>
+  <div id="screen-admin" class="screen"></div>
+</div>
+
+<script>
+// ── CONFIGURAÇÃO ──────────────────────────────────────────────
+const API_URL = "https://script.google.com/macros/s/AKfycbwAaAYQB-JZreGi9c2Zs1CzuUYBHhyvEILylK8LuL8HTNzklkKJqf3AzNxJ3KiGD73I/exec";
+const ADMIN_PASS = "Pebao07!";
+
+// ── ESTADO LOCAL ─────────────────────────────────────────────
+let currentUser = null;
+let isAdmin = false;
+let activeTab = "ranking";
+let cache = { jogos:[], fases:[], usuarios:[], palpites:[], palpitesFase:[], selados:[], ranking:[] };
+
+// ── API ───────────────────────────────────────────────────────
+async function api(action, body={}) {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({ action, ...body }),
+    });
+    return await res.json();
+  } catch(e) {
+    return { ok: false, erro: e.message };
+  }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────
+async function tentarLogin() {
+  const nome = document.getElementById("inp-nome").value.trim();
+  const email = document.getElementById("inp-email").value.trim().toLowerCase();
+  const err = document.getElementById("err-login");
+  err.style.display = "none";
+
+  if (!nome) { mostrarErro(err, "Informe seu nome."); return; }
+  if (!email.endsWith("@soudaki.com")) { mostrarErro(err, "Apenas e-mails @soudaki.com são aceitos."); return; }
+
+  document.getElementById("btn-entrar").textContent = "aguarde...";
+  document.getElementById("btn-entrar").disabled = true;
+
+  const r = await api("login", { email });
+  if (r.ok) {
+    if (r.usuario.status === "aprovado") {
+      currentUser = r.usuario;
+      entrarPlataforma();
+    } else {
+      mostrarView("view-aguardando");
+    }
+  } else if (r.erro === "não_encontrado") {
+    const c = await api("cadastrar", { nome, email });
+    if (c.ok) mostrarView("view-aguardando");
+    else mostrarErro(err, c.erro || "Erro ao cadastrar.");
+  } else {
+    mostrarErro(err, r.erro || "Erro ao acessar.");
+  }
+
+  document.getElementById("btn-entrar").textContent = "entrar no bolão";
+  document.getElementById("btn-entrar").disabled = false;
+}
+
+function irAdmin() { mostrarView("view-admin-login"); }
+function voltarLogin() { mostrarView("view-login"); }
+
+function loginAdmin() {
+  const pass = document.getElementById("inp-admin-pass").value;
+  const err = document.getElementById("err-admin");
+  if (pass !== ADMIN_PASS) { mostrarErro(err, "Senha incorreta."); return; }
+  currentUser = { id: "admin", nome: "Admin", email: "admin@soudaki.com", avatar: "AD", cor: "#185FA5", status: "aprovado" };
+  isAdmin = true;
+  entrarPlataforma();
+}
+
+function sair() {
+  currentUser = null; isAdmin = false;
+  mostrarView("view-login");
+  document.getElementById("topbar").style.display = "none";
+  document.getElementById("nav").style.display = "none";
+  document.getElementById("view-main").style.display = "none";
+}
+
+async function entrarPlataforma() {
+  mostrarView("view-main");
+  document.getElementById("topbar").style.display = "flex";
+  document.getElementById("nav").style.display = "flex";
+  document.getElementById("topbar-user").innerHTML = `olá, <strong>${currentUser.nome.split(" ")[0]}</strong>`;
+  await carregarTudo();
+  buildNav();
+  setTab("ranking");
+}
+
+// ── DADOS ─────────────────────────────────────────────────────
+async function carregarTudo() {
+  const [j, f, u, p, pf, s, r] = await Promise.all([
+    api("listar_jogos"), api("listar_fases"), api("listar_usuarios"),
+    api("listar_palpites"), api("listar_palpites_fase"),
+    api("listar_selados"), api("ranking"),
+  ]);
+  if (j.ok) cache.jogos = j.jogos;
+  if (f.ok) cache.fases = f.fases;
+  if (u.ok) cache.usuarios = u.usuarios;
+  if (p.ok) cache.palpites = p.palpites;
+  if (pf.ok) cache.palpitesFase = pf.palpites;
+  if (s.ok) cache.selados = s.selados;
+  if (r.ok) cache.ranking = r.ranking;
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+function buildNav() {
+  const pendentes = cache.usuarios.filter(u => u.status === "pendente").length;
+  const tabs = [
+    { id:"ranking", label:"🏆 ranking" },
+    { id:"palpites", label:"⚽ palpites" },
+    { id:"fases", label:"📊 fases" },
+    { id:"selado", label:"🔒 selado" },
+  ];
+  if (isAdmin) tabs.push({ id:"admin", label:`⚙️ admin${pendentes>0?` <span class="badge-nav">${pendentes}</span>`:""}`, raw:true });
+  document.getElementById("nav").innerHTML = tabs.map(t =>
+    `<button class="nav-btn${t.id===activeTab?" active":""}" id="tab-${t.id}" onclick="setTab('${t.id}')">${t.raw?t.label:t.label}</button>`
+  ).join("");
+}
+
+async function setTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(`tab-${tab}`)?.classList.add("active");
+  const screen = document.getElementById(`screen-${tab}`);
+  if (screen) { screen.classList.add("active"); screen.innerHTML = loading(); }
+  await carregarTudo();
+  buildNav();
+  if (tab==="ranking") renderRanking();
+  else if (tab==="palpites") renderPalpites();
+  else if (tab==="fases") renderFases();
+  else if (tab==="selado") renderSelado();
+  else if (tab==="admin") renderAdmin();
+}
+
+// ── RANKING ───────────────────────────────────────────────────
+function renderRanking() {
+  const ranking = cache.ranking;
+  const me = ranking.find(u => String(u.id) === String(currentUser?.id));
+  const myPos = me ? ranking.indexOf(me) + 1 : "—";
+  const myPts = me ? me.pts : "—";
+  const medals = ["🥇","🥈","🥉"];
+  const posClass = ["gold","silver","bronze"];
+
+  let html = `<div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">participantes</div><div class="stat-value">${ranking.length}</div></div>
+    <div class="stat-card"><div class="stat-label">jogos encerrados</div><div class="stat-value">${cache.jogos.filter(j=>j.resultado).length}</div><div class="stat-sub">de ${cache.jogos.length}</div></div>
+    <div class="stat-card"><div class="stat-label">sua posição</div><div class="stat-value">${myPos}</div></div>
+    <div class="stat-card"><div class="stat-label">seus pontos</div><div class="stat-value">${myPts}</div></div>
+  </div>
+  <div class="card"><div class="card-title">ranking geral</div>`;
+
+  if (ranking.length === 0) html += `<div class="empty"><div class="empty-icon">🏆</div><p>nenhum participante ainda</p></div>`;
+  else ranking.forEach((u, i) => {
+    const isMe = String(u.id) === String(currentUser?.id);
+    html += `<div class="rank-row${isMe?" me-highlight":""}">
+      <div class="rank-pos ${posClass[i]||""}">${medals[i]||i+1}</div>
+      <div class="avatar" style="background:${u.cor}22;color:${u.cor};">${u.avatar}</div>
+      <div class="rank-info">
+        <div class="rank-name">${u.nome}${isMe?` <span style="font-size:11px;color:var(--accent);">(você)</span>`:""}</div>
+        <div class="rank-detail">${u.exatos||0} exatos · ${u.resultados||0} resultados</div>
+      </div>
+      <div class="rank-pts">${u.pts||0} <span>pts</span></div>
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById("screen-ranking").innerHTML = html;
+}
+
+// ── PALPITES ──────────────────────────────────────────────────
+function renderPalpites() {
+  let html = `<div class="info-box">⏱️ Registre seu palpite antes do jogo começar. Após o fechamento, nenhuma alteração é permitida.</div>`;
+  if (cache.jogos.length === 0) { html += `<div class="empty"><div class="empty-icon">⚽</div><p>nenhum jogo cadastrado ainda</p></div>`; }
+  cache.jogos.forEach(j => {
+    const myP = cache.palpites.find(p => String(p.user_id)===String(currentUser?.id) && String(p.jogo_id)===String(j.id));
+    const palpite = myP?.palpite || "";
+    const [g1="",g2=""] = palpite.split("-");
+    const aberto = j.status === "aberto";
+
+    let statusTag = aberto ? `<span class="tag tag-green">aberto</span>`
+      : j.resultado ? `<span class="tag tag-red">encerrado · ${j.resultado}</span>`
+      : `<span class="tag tag-gray">aguardando resultado</span>`;
+
+    let pontosHtml = "";
+    if (j.resultado && palpite) {
+      if (palpite === j.resultado) pontosHtml = `<span class="pts-exato">+10 pts ✓ exato!</span>`;
+      else {
+        const rj=j.resultado.split("-").map(Number), rp=palpite.split("-").map(Number);
+        const dj=rj[0]-rj[1], dp=rp[0]-rp[1];
+        if ((dj>0&&dp>0)||(dj<0&&dp<0)||(dj===0&&dp===0)) pontosHtml=`<span class="pts-res">+5 pts · resultado certo</span>`;
+        else pontosHtml=`<span class="pts-zero">0 pts</span>`;
+      }
+    }
+
+    html += `<div class="jogo-card">
+      <div class="jogo-header"><span class="jogo-fase">${j.fase} · ${j.data}</span>${statusTag}</div>
+      <div class="jogo-body">
+        <div class="jogo-times">
+          <div class="jogo-time"><div class="jogo-flag">${j.time1_flag||"🏳️"}</div><div class="jogo-name">${j.time1_nome}</div></div>
+          <div class="jogo-vs">×</div>
+          <div class="jogo-time"><div class="jogo-flag">${j.time2_flag||"🏳️"}</div><div class="jogo-name">${j.time2_nome}</div></div>
+        </div>`;
+    if (aberto) {
+      html += `<div class="palpite-row">
+        <input class="num-input" type="number" min="0" max="99" value="${g1}" id="g1-${j.id}" placeholder="0" />
+        <span class="sep">×</span>
+        <input class="num-input" type="number" min="0" max="99" value="${g2}" id="g2-${j.id}" placeholder="0" />
+        <button class="btn btn-primary btn-sm" onclick="salvarPalpite('${j.id}')">salvar</button>
+      </div>`;
+    } else {
+      html += `<div class="palpite-salvo"><div><div style="font-size:12px;color:var(--muted);">seu palpite</div><div style="font-size:18px;font-weight:700;font-family:'Syne',sans-serif;">${palpite||"—"}</div></div>${pontosHtml}</div>`;
+    }
+    html += `</div></div>`;
+  });
+  document.getElementById("screen-palpites").innerHTML = html;
+}
+
+async function salvarPalpite(jogoId) {
+  const g1 = document.getElementById(`g1-${jogoId}`)?.value;
+  const g2 = document.getElementById(`g2-${jogoId}`)?.value;
+  if (g1===""||g2==="") { alert("Preencha os dois placares!"); return; }
+  const r = await api("salvar_palpite", { user_id: currentUser.id, jogo_id: jogoId, palpite: `${g1}-${g2}` });
+  if (r.ok) { await carregarTudo(); renderPalpites(); renderRanking(); }
+  else alert("Erro ao salvar: " + r.erro);
+}
+
+// ── FASES ─────────────────────────────────────────────────────
+function renderFases() {
+  let html = `<div class="info-box">📊 Palpite bidirecional: você ganha pontos se acertar — seja "passa" ou "não passa". +15 pts por fase (grupos a semi), +20 pts na final.</div>`;
+  cache.fases.forEach(f => {
+    const myP = cache.palpitesFase.find(p => String(p.user_id)===String(currentUser?.id) && String(p.fase_id)===String(f.id));
+    const palpite = myP?.palpite || "";
+    const aberto = f.status === "aberto";
+    const statusTag = aberto ? `<span class="tag tag-green">aberto</span>` : `<span class="tag tag-gray">fechado</span>`;
+
+    let pontosHtml = "";
+    if (f.resultado && palpite) {
+      const bonus = String(f.id)==="5"?20:15;
+      pontosHtml = palpite===f.resultado
+        ? `<span class="tag tag-green">✓ acertou +${bonus} pts</span>`
+        : `<span class="tag tag-gray">✗ não acertou</span>`;
+    }
+
+    html += `<div class="fase-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div style="font-size:14px;font-weight:500;">${f.label}</div>${statusTag}
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:${aberto?'0':'8px'};">${f.desc}</div>`;
+
+    if (aberto) {
+      html += `<div class="fase-opcoes">
+        <button class="fase-btn${palpite==='sim'?' sel-sim':''}" onclick="salvarFase('${f.id}','sim')">✅ passa</button>
+        <button class="fase-btn${palpite==='nao'?' sel-nao':''}" onclick="salvarFase('${f.id}','nao')">❌ não passa</button>
+      </div>`;
+    } else {
+      html += `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <div style="font-size:13px;color:var(--muted);">seu palpite: <strong style="color:var(--text);">${palpite==='sim'?'passa':palpite==='nao'?'não passa':'—'}</strong></div>
+        ${f.resultado?`<div style="font-size:12px;color:var(--muted);">resultado: <strong>${f.resultado==='sim'?'passou':'não passou'}</strong></div>`:''}
+        ${pontosHtml}
+      </div>`;
+    }
+    html += `</div>`;
+  });
+  document.getElementById("screen-fases").innerHTML = html;
+}
+
+async function salvarFase(faseId, opcao) {
+  const r = await api("salvar_fase_palpite", { user_id: currentUser.id, fase_id: faseId, palpite: opcao });
+  if (r.ok) { await carregarTudo(); renderFases(); }
+  else alert("Erro: " + r.erro);
+}
+
+// ── SELADO ────────────────────────────────────────────────────
+function renderSelado() {
+  const meu = cache.selados.find(s => String(s.user_id)===String(currentUser?.id));
+  let html = `<div class="card"><div class="card-title">palpite selado</div>
+    <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:16px;">
+      Qual será o placar do <strong style="color:var(--text);">último jogo do Brasil</strong> na competição? 
+      Registrado uma única vez — antes do primeiro jogo — e usado apenas em caso de empate no ranking final.
+    </p>`;
+
+  if (meu) {
+    html += `<div class="selado-box"><div class="selado-ok">
+      <div class="selado-ok-icon">🔒</div>
+      <div><div class="selado-ok-text">palpite registrado: Brasil ${meu.palpite}</div>
+      <div class="selado-ok-sub">imutável · usado apenas em desempate</div></div>
+    </div></div>`;
+  } else {
+    html += `<div class="selado-box">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:14px;">Você ainda não registrou seu palpite selado. Após salvar, não poderá alterar.</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <span style="font-size:13px;color:var(--muted);">Brasil</span>
+        <input class="num-input" type="number" min="0" max="99" id="sel-g1" placeholder="0" />
+        <span class="sep">×</span>
+        <input class="num-input" type="number" min="0" max="99" id="sel-g2" placeholder="0" />
+        <span style="font-size:13px;color:var(--muted);">adversário</span>
+      </div>
+      <button class="btn btn-primary" onclick="salvarSelado()">registrar palpite selado</button>
+    </div>`;
+  }
+  html += `</div>`;
+  document.getElementById("screen-selado").innerHTML = html;
+}
+
+async function salvarSelado() {
+  const g1=document.getElementById("sel-g1")?.value;
+  const g2=document.getElementById("sel-g2")?.value;
+  if (g1===""||g2==="") { alert("Preencha os dois campos!"); return; }
+  if (!confirm("Atenção: após salvar, o palpite selado não pode ser alterado. Confirmar?")) return;
+  const r = await api("salvar_selado", { user_id: currentUser.id, palpite: `${g1}-${g2}` });
+  if (r.ok) { await carregarTudo(); renderSelado(); }
+  else alert("Erro: " + r.erro);
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────
+function renderAdmin() {
+  const pendentes = cache.usuarios.filter(u => u.status === "pendente");
+  const aprovados = cache.usuarios.filter(u => u.status === "aprovado");
+
+  let html = `<div class="admin-section">
+    <div class="admin-section-title">cadastros pendentes ${pendentes.length>0?`<span class="badge-nav">${pendentes.length}</span>`:""}</div>`;
+
+  if (pendentes.length===0) html += `<div class="empty"><div class="empty-icon">✅</div><p>nenhum cadastro pendente</p></div>`;
+  else pendentes.forEach(u => {
+    html += `<div class="pendente-row">
+      <div class="avatar" style="background:${u.cor}22;color:${u.cor};">${u.avatar}</div>
+      <div class="pendente-info"><div class="pendente-nome">${u.nome}</div><div class="pendente-email">${u.email}</div></div>
+      <button class="btn btn-success btn-sm" onclick="aprovarUser('${u.id}')">aprovar</button>
+      <button class="btn btn-danger btn-sm" onclick="rejeitarUser('${u.id}')">rejeitar</button>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Gerenciar Jogos
+  html += `<div class="admin-section">
+    <div class="admin-section-title">gerenciar jogos</div>
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-title">adicionar novo jogo</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">fase</label>
+          <select class="form-select" id="nj-fase">
+            <option>Fase de grupos</option>
+            <option>Oitavas de final</option>
+            <option>Quartas de final</option>
+            <option>Semifinal</option>
+            <option>Final</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">data e horário</label>
+          <input class="form-input" id="nj-data" placeholder="Ex: 11/06 18h" style="margin-bottom:0;" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">bandeira time 1 (emoji)</label>
+          <input class="form-input" id="nj-flag1" placeholder="Ex: 🇧🇷" style="margin-bottom:0;" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">nome time 1</label>
+          <input class="form-input" id="nj-nome1" placeholder="Ex: Brasil" style="margin-bottom:0;" />
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:10px;">
+        <div class="form-group">
+          <label class="form-label">bandeira time 2 (emoji)</label>
+          <input class="form-input" id="nj-flag2" placeholder="Ex: 🇲🇽" style="margin-bottom:0;" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">nome time 2</label>
+          <input class="form-input" id="nj-nome2" placeholder="Ex: México" style="margin-bottom:0;" />
+        </div>
+      </div>
+      <div style="margin-top:12px;">
+        <button class="btn btn-primary" onclick="adicionarJogo()">+ adicionar jogo</button>
+      </div>
+    </div>`;
+
+  if (cache.jogos.length===0) html += `<div class="empty"><div class="empty-icon">⚽</div><p>nenhum jogo cadastrado ainda</p></div>`;
+  else cache.jogos.forEach(j => {
+    const aberto = j.status==="aberto";
+    const encerrado = !!j.resultado;
+    const statusTag = aberto ? `<span class="tag tag-green">aberto</span>`
+      : encerrado ? `<span class="tag tag-red">encerrado</span>`
+      : `<span class="tag tag-amber">fechado</span>`;
+
+    html += `<div class="jogo-admin-card">
+      <div class="jogo-admin-head">
+        <span style="font-size:13px;font-weight:500;">${j.time1_flag||"🏳️"} ${j.time1_nome} × ${j.time2_nome} ${j.time2_flag||"🏳️"} <span style="font-size:11px;font-weight:400;color:var(--muted);">${j.data}</span></span>
+        ${statusTag}
+      </div>
+      <div class="jogo-admin-body">`;
+
+    if (aberto) {
+      html += `<button class="btn btn-danger btn-sm" onclick="fecharJogo('${j.id}')">🔒 fechar palpites</button>`;
+    } else if (!encerrado) {
+      html += `<button class="btn btn-success btn-sm" onclick="abrirJogo('${j.id}')">🔓 abrir palpites</button>
+        <input class="res-input" type="number" min="0" max="99" id="r1-${j.id}" placeholder="0" />
+        <span style="color:var(--muted);font-weight:700;">×</span>
+        <input class="res-input" type="number" min="0" max="99" id="r2-${j.id}" placeholder="0" />
+        <button class="btn btn-primary btn-sm" onclick="lancarResultado('${j.id}')">salvar resultado</button>`;
+    } else {
+      html += `<span style="font-size:12px;color:var(--muted);">resultado: <strong>${j.resultado}</strong> · ranking atualizado.</span>`;
+    }
+    html += `</div></div>`;
+  });
+  html += `</div>`;
+
+  // Controle de Fases
+  html += `<div class="admin-section"><div class="admin-section-title">controle de fases</div>`;
+  cache.fases.forEach(f => {
+    const aberto = f.status==="aberto";
+    const encerrado = !!f.resultado;
+    const statusTag = aberto ? `<span class="tag tag-green">aberto</span>`
+      : encerrado ? `<span class="tag tag-red">encerrado</span>`
+      : `<span class="tag tag-amber">fechado</span>`;
+
+    html += `<div class="jogo-admin-card">
+      <div class="jogo-admin-head">
+        <span style="font-size:13px;font-weight:500;">${f.label}</span>${statusTag}
+      </div>
+      <div class="jogo-admin-body">`;
+
+    if (aberto) {
+      html += `<button class="btn btn-danger btn-sm" onclick="fecharFase('${f.id}')">🔒 fechar palpites</button>`;
+    } else if (!encerrado) {
+      html += `<button class="btn btn-success btn-sm" onclick="abrirFase('${f.id}')">🔓 abrir palpites</button>
+        <button class="btn btn-primary btn-sm" onclick="lancarFase('${f.id}','sim')">passou ✅</button>
+        <button class="btn btn-danger btn-sm" onclick="lancarFase('${f.id}','nao')">não passou ❌</button>`;
+    } else {
+      html += `<span style="font-size:12px;color:var(--muted);">resultado: <strong>${f.resultado==='sim'?'passou':'não passou'}</strong></span>`;
+    }
+    html += `</div></div>`;
+  });
+  html += `</div>`;
+
+  // Participantes
+  html += `<div class="admin-section"><div class="admin-section-title">participantes aprovados (${aprovados.length})</div>`;
+  aprovados.forEach(u => {
+    const pts = cache.ranking.find(r => String(r.id)===String(u.id))?.pts || 0;
+    html += `<div class="pendente-row">
+      <div class="avatar" style="background:${u.cor}22;color:${u.cor};">${u.avatar}</div>
+      <div class="pendente-info"><div class="pendente-nome">${u.nome}</div><div class="pendente-email">${u.email}</div></div>
+      <span class="tag tag-blue">${pts} pts</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById("screen-admin").innerHTML = html;
+}
+
+async function aprovarUser(id) {
+  await api("aprovar_usuario", { id });
+  await carregarTudo(); buildNav(); renderAdmin();
+}
+async function rejeitarUser(id) {
+  if (!confirm("Rejeitar este cadastro?")) return;
+  await api("rejeitar_usuario", { id });
+  await carregarTudo(); buildNav(); renderAdmin();
+}
+async function adicionarJogo() {
+  const body = {
+    fase: document.getElementById("nj-fase").value,
+    data: document.getElementById("nj-data").value,
+    time1_flag: document.getElementById("nj-flag1").value,
+    time1_nome: document.getElementById("nj-nome1").value,
+    time2_flag: document.getElementById("nj-flag2").value,
+    time2_nome: document.getElementById("nj-nome2").value,
+  };
+  if (!body.time1_nome||!body.time2_nome) { alert("Preencha os nomes dos times."); return; }
+  const r = await api("adicionar_jogo", body);
+  if (r.ok) { await carregarTudo(); renderAdmin(); }
+  else alert("Erro: " + r.erro);
+}
+async function abrirJogo(id) { await api("abrir_jogo",{id}); await carregarTudo(); renderAdmin(); renderPalpites(); }
+async function fecharJogo(id) { await api("fechar_jogo",{id}); await carregarTudo(); renderAdmin(); renderPalpites(); }
+async function lancarResultado(id) {
+  const g1=document.getElementById(`r1-${id}`)?.value;
+  const g2=document.getElementById(`r2-${id}`)?.value;
+  if (g1===""||g2==="") { alert("Preencha o resultado!"); return; }
+  await api("lancar_resultado",{id,resultado:`${g1}-${g2}`});
+  await carregarTudo(); renderAdmin(); renderPalpites(); renderRanking();
+}
+async function abrirFase(id) { await api("abrir_fase",{id}); await carregarTudo(); renderAdmin(); renderFases(); }
+async function fecharFase(id) { await api("fechar_fase",{id}); await carregarTudo(); renderAdmin(); renderFases(); }
+async function lancarFase(id, resultado) {
+  await api("lancar_fase",{id,resultado});
+  await carregarTudo(); renderAdmin(); renderFases(); renderRanking();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────
+function mostrarView(id) {
+  ["view-login","view-admin-login","view-aguardando","view-main"].forEach(v => {
+    document.getElementById(v).style.display = "none";
+  });
+  document.getElementById(id).style.display = "block";
+}
+function mostrarErro(el, msg) { el.textContent = msg; el.style.display = "block"; }
+function loading() { return `<div class="loading"><div class="spinner"></div><p>carregando...</p></div>`; }
+</script>
+</body>
+</html>
